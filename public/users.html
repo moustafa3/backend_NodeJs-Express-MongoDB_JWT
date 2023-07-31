@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste des utilisateurs</title>
+  <link rel="stylesheet" href="styleuser.css">
+  <style>
+   
+    #logoutButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Liste des utilisateurs</h1>
+  <ul id="user-list"></ul>
+  <button id="logoutButton">Déconnexion</button>
+
+  <script>
+
+    function getToken() {
+      const token = localStorage.getItem('token');
+      return token;
+    }
+
+    function getUsers() {
+      const token = getToken();
+      console.log('Token:', token); 
+
+      fetch('/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+         
+        },
+      })
+
+      .then(response => {
+        console.log('Headers:', response.headers); 
+        if (!response.ok) {
+          throw new Error('Erreur lors de la récupération des utilisateurs');
+        }
+        return response.json();
+      })
+
+      .then(users => {
+        console.log('Users:', users);
+        console.log('Token:', token);
+        const userList = document.getElementById('user-list');
+        users.forEach(user => {
+          const listItem = document.createElement('li');
+          listItem.textContent = user.email;
+          userList.appendChild(listItem);
+        });
+      })
+      .catch(error => console.error(error));
+    }
+    getUsers();
+
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login'; 
+    }
+    document.getElementById('logoutButton').addEventListener('click', logout);
+
+  </script>
+</body>
+</html>
