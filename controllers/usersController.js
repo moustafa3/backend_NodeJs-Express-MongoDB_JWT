@@ -1,8 +1,8 @@
-const User = require('../models/userModel');
+const Tran = require('../models/transactionmodel');
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}, { password: 0 });
+    const users = await Tran.find({}, { password: 0 });
     return res.status(200).json(users);
   } catch (err) {
     console.error('Erreur lors de la récupération des utilisateurs :', err);
